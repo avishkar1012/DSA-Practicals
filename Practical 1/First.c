@@ -45,3 +45,27 @@ int main() {
     } while (ch != 5);
     return 0;
 }
+
+void add1() {
+    int x, y, sum;
+    printf("Enter two numbers: ");
+    scanf("%d %d", &x, &y);
+    sum = x + y;
+    printf("Sum = %d\n", sum);
+}
+
+void add2(int x, int y) {
+    int sum = x + y;
+    printf("Sum = %d\n", sum);
+}
+
+int add3() {
+    int x, y, sum;
+    printf("Enter two numbers: ");
+    scanf("%d %d", &x, &y);
+    return x + y;
+}
+
+int add4(int x, int y) {
+    return x + y;
+}
