@@ -95,6 +95,7 @@ void insert_begin()
         p->data = value;
         p->next = start;
         start = p;
+        printf("\nNode inserted into the list\n");
     }
 }
 
@@ -124,6 +125,8 @@ void insert_last()
         }
 
         temp->next = p;
+
+        printf("Node inserted at the last of list\n");
     }
 }
 
@@ -146,6 +149,8 @@ void insert_position()
         if (pos == 1) {
             p->next = start;
             start = p;
+
+            printf("Node inserted at the position 1\n");
         } else {
             temp = start;
             while (i < pos - 1 && temp != NULL) {
@@ -158,6 +163,8 @@ void insert_position()
             } else {
                 p->next = temp->next;
                 temp->next = p;
+
+                printf("Node inserted at the position %d\n", pos);
             }
         }
     }
@@ -257,7 +264,7 @@ void display()
         printf("Linked List: ");
 
         while (temp != NULL) {
-        printf("%d:%temp ", temp->data, temp->next);
+        printf("%d:%temp -> ", temp->data, temp->next);
         temp = temp->next;
     }
     printf("\n");
