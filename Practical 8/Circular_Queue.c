@@ -13,42 +13,47 @@ void enqueue()
     {
         printf("Queue is full. Cannot enqueue.\n");
         return;
-    } else {
-        printf("Enter the value to enqueue: ");
-        scanf("%d", &value);
-
-        if (front == -1)
-        {
-            front = 0;
-            rear = 0;
-        } else {
-            rear = (rear + 1) % MAX;
-        }
-
-        queue[rear] = value;
-        printf("Enqueued %d to the queue.\n", value);
     }
+
+    printf("Enter the value to enqueue: ");
+    scanf("%d", &value);
+
+    if (front == -1)
+    {
+        front = 0;
+        rear = 0;
+    }
+    else
+    {
+        rear = (rear + 1) % MAX;
+    }
+
+    queue[rear] = value;
+
+    printf("Enqueued %d to the queue.\n", value);
 }
 
-void dequeue() 
+void dequeue()
 {
     if (front == -1)
     {
         printf("Queue is empty. Cannot dequeue.\n");
         return;
-    } else {
-        int value = queue[front];
-
-        if (front == rear)
-        {
-            front = -1;
-            rear = -1;
-        } else {
-            front = (front + 1) % MAX;
-        }
-
-        printf("Dequeued %d from the queue.\n", value);
     }
+
+    int value = queue[front];
+
+    if (front == rear)
+    {
+        front = -1;
+        rear = -1;
+    }
+    else
+    {
+        front = (front + 1) % MAX;
+    }
+
+    printf("Dequeued %d from the queue.\n", value);
 }
 
 void peek()
@@ -57,38 +62,44 @@ void peek()
     {
         printf("Queue is empty. Cannot peek.\n");
         return;
-    } else {
-        printf("Front element is: %d\n", queue[front]);
     }
+
+    printf("Front element is: %d\n", queue[front]);
 }
 
 void search()
 {
-    int value, i, position = -1;
+    int value;
+    int i;
+    int position = -1;
 
     if (front == -1)
     {
         printf("\nQueue is empty.\n");
-        return 0;
+        return;
     }
-    else {
-        printf("\nEnter the value to search: ");
-        scanf("%d", &value);
 
-        while (1)
+    printf("\nEnter the value to search: ");
+    scanf("%d", &value);
+
+    i = front;
+
+    while (1)
+    {
+        if (queue[i] == value)
         {
-            if (queue[front] == value)
-            {
-                position = front;
-                break;
-            }
-            if (front == rear)
-            {
-                break;
-            }
-            front = (front + 1) % MAX;
+            position = i;
+            break;
         }
+
+        if (i == rear)
+        {
+            break;
+        }
+
+        i = (i + 1) % MAX;
     }
+
     if (position == -1)
     {
         printf("\nValue not found in the queue.\n");
@@ -107,14 +118,16 @@ void display()
     {
         printf("Queue is empty.\n");
         return;
-    } else {
-        printf("Queue elements: ");
-        for (i = front; i != rear; i = (i + 1) % MAX)
-        {
-            printf("%d ", queue[i]);
-        }
-        printf("%d\n", queue[rear]);
     }
+
+    printf("Queue elements: ");
+
+    for (i = front; i != rear; i = (i + 1) % MAX)
+    {
+        printf("%d ", queue[i]);
+    }
+
+    printf("%d\n", queue[rear]);
 }
 
 int main()
@@ -130,6 +143,7 @@ int main()
         printf("4. Search\n");
         printf("5. Display\n");
         printf("6. Exit\n");
+
         printf("Enter your choice: ");
         scanf("%d", &choice);
 
@@ -138,20 +152,27 @@ int main()
             case 1:
                 enqueue();
                 break;
+
             case 2:
                 dequeue();
                 break;
+
             case 3:
                 peek();
                 break;
+
             case 4:
                 search();
                 break;
+
             case 5:
                 display();
                 break;
+
             case 6:
+                printf("Exiting program...\n");
                 return 0;
+
             default:
                 printf("Invalid choice. Please try again.\n");
         }
