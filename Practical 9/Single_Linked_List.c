@@ -253,19 +253,17 @@ void delete_position()
 
 void display()
 {
-    struct node *temp;
+    struct node *p;
+    p = start;
 
-    if (start == NULL)
+    if (p == NULL)
     {
         printf("\nList is empty.\n");
     } else {
-        temp = start;
-
-        printf("Linked List: ");
-
-        while (temp != NULL) {
-        printf("%d:%temp -> ", temp->data, temp->next);
-        temp = temp->next;
+        printf("\nPrinting Values: \n");
+        while (p != NULL)  {
+            printf("%d : %p -> ", p->data, p);
+            p = p->next;
     }
     printf("\n");
     }
