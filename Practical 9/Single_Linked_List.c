@@ -4,6 +4,7 @@
 
 struct node {
     int data;
+    struct node *prev;
     struct node *next;
 };
 
@@ -11,31 +12,35 @@ struct node *start = NULL;
 
 void insert_begin();
 void insert_last();
-void insert_position();
+void insert_locc();
 void delete_begin();
 void delete_last();
-void delete_position();
+void delete_locc();
 void display();
 
 int main()
 {
     int choice = 0;
 
-    printf("Size of data = %d\tSize of Link=%d", sizeof(start->data), sizeof(start->next));
+    printf("Doubly Linked List Operations....\n");
+
+    printf("Size of data part = %d", sizeof(start->data));
+    printf("\tSize of prev address=%d", sizeof(start->prev));
+    printf("\tSize of next address=%d", sizeof(start->next));
     printf("\nSize of node = %d", sizeof(struct node));
 
     while (1) {
-    printf("===Linked list operations menu===\n");
+    printf("===Doubly Linked List operations menu===\n");
     printf("1.Insert at the beginning\n");
     printf("2.Insert at the last\n");
     printf("3.Insert at some position\n");
     printf("4.Delete from the beginning\n");
     printf("5.Delete from the last\n");
     printf("6.Delete from some position\n");
-    printf("7.Display the nodes\n");
+    printf("7.Display the List\n");
     printf("8.Exit\n");
 
-    printf("Enter your choice: ");
+    printf("Enter the operation you want to performed: ");
     scanf("%d", &choice);
 
     switch (choice)
@@ -49,7 +54,7 @@ int main()
         break;
 
     case 3:
-        insert_position();
+        insert_locc();
         break;
 
     case 4:
@@ -61,7 +66,7 @@ int main()
         break;
 
     case 6:
-        delete_position();
+        delete_locc();
         break;
 
     case 7:
@@ -93,9 +98,16 @@ void insert_begin()
         printf("\nEnter the value: ");
         scanf("%d", &value);
         p->data = value;
+        p->prev = NULL;
         p->next = start;
+
+        if (start != NULL)
+        {
+            start->prev = p;
+        }
+
         start = p;
-        printf("\nNode inserted into the list\n");
+        printf("\nNode inserted into the list at the beginning: %d\n", p->data);
     }
 }
 
@@ -103,19 +115,22 @@ void insert_last()
 {
     struct node *p, *temp;
     int value;
-    p = (struct node *)malloc(sizeof(struct node));
-    printf("Address of Node = %p", (void*)p);
+
+    p = malloc(sizeof(struct node));
 
     if (p == NULL) {
-        printf("\nOverflow\n");
-    } else {
-        printf("\nEnter the value: ");
-        scanf("%d", &value);
-        p->data = value;
-        p->next = NULL;
+        printf("Memory allocation failed.\n");
+        return;
     }
 
+    printf("Enter the value: ");
+    scanf("%d", &value);
+
+    p->data = value;
+    p->next = NULL;
+
     if (start == NULL) {
+        p->prev = NULL;
         start = p;
     } else {
         temp = start;
@@ -125,130 +140,169 @@ void insert_last()
         }
 
         temp->next = p;
-
-        printf("Node inserted at the last of list\n");
+        p->prev = temp;
     }
+
+    printf("Node inserted at the end: %d\n", p->data);
 }
 
-void insert_position()
+void insert_locc()
 {
     struct node *p, *temp;
-    int value, pos, i = 1;
-    p = (struct node *)malloc(sizeof(struct node));
-    printf("Address of Node = %p", (void*)p);
+    int value, pos, i;
+
+    printf("Enter the position: ");
+    scanf("%d", &pos);
+
+    if (pos < 1) {
+        printf("Invalid position.\n");
+        return;
+    }
+
+    p = malloc(sizeof(struct node));
 
     if (p == NULL) {
-        printf("\nOverflow\n");
-    } else {
-        printf("\nEnter the position: ");
-        scanf("%d", &pos);
-        printf("\nEnter the value: ");
-        scanf("%d", &value);
-        p->data = value;
-
-        if (pos == 1) {
-            p->next = start;
-            start = p;
-
-            printf("Node inserted at the position 1\n");
-        } else {
-            temp = start;
-            while (i < pos - 1 && temp != NULL) {
-                temp = temp->next;
-                i++;
-            }
-            if (temp == NULL) {
-                printf("\nPosition out of bounds\n");
-                free(p);
-            } else {
-                p->next = temp->next;
-                temp->next = p;
-
-                printf("Node inserted at the position %d\n", pos);
-            }
-        }
+        printf("Memory allocation failed.\n");
+        return;
     }
+
+    printf("Enter the value: ");
+    scanf("%d", &value);
+
+    p->data = value;
+
+    if (pos == 1) {
+        p->prev = NULL;
+        p->next = start;
+
+        if (start != NULL) {
+            start->prev = p;
+        }
+
+        start = p;
+    } else {
+        temp = start;
+
+        for (i = 1; i < pos - 1 && temp != NULL; i++) {
+            temp = temp->next;
+        }
+
+        if (temp == NULL) {
+            printf("Position out of bounds.\n");
+            free(p);
+            return;
+        }
+
+        p->next = temp->next;
+        p->prev = temp;
+
+        if (temp->next != NULL) {
+            temp->next->prev = p;
+        }
+
+        temp->next = p;
+    }
+
+    printf("Node inserted successfully at position %d.\n", pos);
 }
 
 void delete_begin()
 {
-    struct node *temp;
+    struct node *p;
+    int value;
 
-    if (start == NULL)
-    {
-        printf("Underflow..!! List is empty.\n");
-    } else {
-        temp = start;
-        start = start->next;
-        free(temp);
-
-        printf("Node deleted from beginning\n");
+    if (start == NULL) {
+        printf("List is empty.\n");
+        return;
     }
+
+    p = start;
+    value = p->data;
+
+    start = start->next;
+
+    if (start != NULL) {
+        start->prev = NULL;
+    }
+
+    free(p);
+
+    printf("Node deleted from the beginning: %d\n", value);
 }
 
 void delete_last()
 {
-    struct node *temp;
-
-    if (start == NULL)
-    {
-        printf("Underflow..!! List is empty.\n");
-    } else if (start->next == NULL)
-    {
-        free(start);
-        start = NULL;
-    }
-    else {
-        temp = start;
-
-        while (temp->next->next != NULL)
-        {
-            temp = temp->next;
-        }
-        free(temp->next);
-        temp->next = NULL;
-
-        printf("Node deleted from last\n");
-    }
-}
-
-void delete_position()
-{
-    struct node *temp, *del;
-    int pos, i;
-
-    printf("Enter position: ");
-    scanf("%d", &pos);
+    struct node *p;
+    int value;
 
     if (start == NULL) {
-        printf("Underflow..!! List is empty.\n");
-        return;
-    } else if (pos == 1) {
-        temp = start;
-        start = start->next;
-        free(temp);
-
-        printf("Node deleted from position 1\n");
+        printf("List is empty.\n");
         return;
     }
-    else {
-        temp = start;
 
-        for (int i = 1; i < pos - 1; i++)
-        {
-            temp = temp->next;
-        }
+    p = start;
 
-        if (temp == NULL || temp->next == NULL) {
-            printf("Position out of bounds\n");
-        } else {
-            del = temp->next;
-            temp->next = del->next;
-            free(del);
-
-            printf("Node deleted from position %d\n", pos);
-        }
+    while (p->next != NULL) {
+        p = p->next;
     }
+
+    value = p->data;
+
+    if (p->prev == NULL) {
+        start = NULL;
+    } else {
+        p->prev->next = NULL;
+    }
+
+    free(p);
+
+    printf("Last node deleted: %d\n", value);
+}
+
+void delete_locc()
+{
+    struct node *p;
+    int pos, i, value;
+
+    if (start == NULL) {
+        printf("List is empty.\n");
+        return;
+    }
+
+    printf("Enter the position to delete: ");
+    scanf("%d", &pos);
+
+    if (pos < 1) {
+        printf("Invalid position.\n");
+        return;
+    }
+
+    p = start;
+
+    for (i = 1; i < pos && p != NULL; i++) {
+        p = p->next;
+    }
+
+    if (p == NULL) {
+        printf("Position out of bounds.\n");
+        return;
+    }
+
+    value = p->data;
+
+    if (p->prev != NULL) {
+        p->prev->next = p->next;
+    } else {
+        start = p->next;
+    }
+
+    if (p->next != NULL) {
+        p->next->prev = p->prev;
+    }
+
+    free(p);
+
+    printf("Node deleted from position %d: %d\n", pos, value);
 }
 
 void display()
@@ -262,9 +316,9 @@ void display()
     } else {
         printf("\nPrinting Values: \n");
         while (p != NULL)  {
-            printf("%d : %p -> ", p->data, p);
+            printf("%d : %p <--> ", p->data, (void*)p);
             p = p->next;
     }
-    printf("\n");
+    printf("NULL\n");
     }
 }
